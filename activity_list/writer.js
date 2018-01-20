@@ -1,5 +1,6 @@
 /**
  * Creates a Writer object, that stores information about the writer's activity.
+ * All dates should be strings formatted as MM/DD/YYYY.
  *
  * @param username  the writer's MAL username.
  */
@@ -9,17 +10,27 @@ function Writer(username)
     this._username = username;
     // Date writer's application was submitted.
     this._appDate = null;
-    // Date of last activity.
-    this._activeDate = null;
+    // Date of last claimed synopsis.
+    this._lastWriteDate = null;
     // Number of synopses written.
     this._numSynopses = 0;
 
+    /**
+     * Gets the date of last activity by the writer.
+     *
+     * @return the date of last activity.
+     */
+    this.getActiveDate = function()
+    {
+        return this.getLastWriteDate();
+    }
+    
     /**
      * Gets the writer's username.
      *
      * @return the username.
      */
-    function getUsername()
+    this.getUsername = function()
     {
         return this._username;
     }
@@ -29,7 +40,7 @@ function Writer(username)
      *
      * @param username  the user's username.
      */
-    function setUsername(username)
+    this.setUsername = function(username)
     {
         this._username = username;
     }
@@ -39,7 +50,7 @@ function Writer(username)
      *
      * @return the application date.
      */
-    function getAppDate()
+    this.getAppDate = function()
     {
         return this._appDate;
     }
@@ -47,11 +58,11 @@ function Writer(username)
     /**
      * Sets the date the writer submitted their application.
      *
-     * @param appDate  the date of submission for their application.
+     * @param date  the date of submission for their application.
      */
-    function setAppDate(appDate)
+    this.setAppDate = function(date)
     {
-        this._appDate = appDate;
+        this._appDate = date;
     }
 
     /**
@@ -59,19 +70,19 @@ function Writer(username)
      *
      * @return last date of activity.
      */
-    function getActiveDate()
+    this.getLastWriteDate = function()
     {
-        return this._activeDate;
+        return this._lastWriteDate;
     }
 
     /**
      * Sets the date the writer last claimed a synopsis.
      *
-     * @param activeDate  last date of activity
+     * @param date  date of last claim
      */
-    function setActiveDate(activeDate)
+    this.setLastWriteDate = function(date)
     {
-        this._activeDate = activeDate;
+        this._lastWriteDate = date;
     }
 
     /**
@@ -79,7 +90,7 @@ function Writer(username)
      *
      * @return number of synopses written.
      */
-    function getNumSynopses()
+    this.getNumSynopses = function()
     {
         return this._numSynopses;
     }
@@ -89,7 +100,7 @@ function Writer(username)
      *
      * @param num  the number of synopses written.
      */
-    function setNumSynopses(num)
+    this.setNumSynopses = function(num)
     {
         this._numSynopses = num;
     }
