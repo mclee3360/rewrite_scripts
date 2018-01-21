@@ -38,7 +38,8 @@ function parseWrittenActivity(date, usernames, range)
     {
         for (j = 0; j < usernames.length; j++)
         {
-            if (range[i][writer - 1].indexOf(usernames[j]) >= 0)
+            var checkWriter = ' ' + range[i][writer - 1] + ' ';
+            if (checkWriter.indexOf(' ' + usernames[j] + ' ') >= 0)
             {
                 var checkDate = range[i][wDate - 1];
                 if (checkDate instanceof Date)
