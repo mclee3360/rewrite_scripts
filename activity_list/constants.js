@@ -10,3 +10,4 @@ var p1Date = 7;     // Phase One Date Claimed
 var p1Editor = 8;   // Phase One Editor
 var p2Date = 9;     // Phase Two Date Claimed
 var p2Editor = 10;  // Phase Two Editor
+var cols = [[wDate, writer], [p1Date, p1Editor], [p2Date, p2Editor]];
