@@ -38,9 +38,9 @@ function parseWrittenActivity(date, usernames, range)
     {
         for (j = 0; j < usernames.length; j++)
         {
-            if (range[i][writer - 1] === usernames[j])
+            if (range[i][writer - 1].indexOf(usernames[j]) >= 0)
             {
-                checkDate = range[i][wDate - 1];
+                var checkDate = range[i][wDate - 1];
                 if (checkDate instanceof Date)
                 {
                     if (activeDate == 'N/A')
@@ -49,7 +49,7 @@ function parseWrittenActivity(date, usernames, range)
                     }
                     else
                     {
-                        if (activeDate < checkDate < 0)
+                        if (activeDate < checkDate)
                         {
                             activeDate = checkDate;
                         }
