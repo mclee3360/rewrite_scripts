@@ -1,7 +1,6 @@
-function getNumWritten(refresher, username)
+function getNumWritten(name_cell1, name_cell2)
 {
-    // All user names to search for.
-    var usernames = Array.prototype.slice.call(arguments, 1, arguments.length);
+    var usernames = getUsernames(name_cell1, name_cell2);
     var archive = getArchiveRange();
     // Count number of synopses by user.
     var count = 0;
@@ -9,7 +8,7 @@ function getNumWritten(refresher, username)
     {
         for (j = 0; j < usernames.length; j++)
         {
-            var checkWriter = ' ' + archive[i][writer - 1] + ' ';
+            var checkWriter = ' ' + archive[i][writer - 1].toLowerCase() + ' ';
             if (checkWriter.indexOf(' ' + usernames[j] + ' ') >= 0)
             {
                 count++;
@@ -19,10 +18,9 @@ function getNumWritten(refresher, username)
     return count;
 }
 
-function getActivityWriter(refresher, username)
+function getActivityWriter(name_cell1, name_cell2)
 {
-    // All user names to search for.
-    var usernames = Array.prototype.slice.call(arguments, 1, arguments.length);
+    var usernames = getUsernames(name_cell1, name_cell2);
     // Parse 'In Progress' sheet
     var inProgress = getIPRange();
     var activeDate = parseWrittenActivity("N/A", usernames, inProgress);
@@ -38,7 +36,7 @@ function parseWrittenActivity(date, usernames, range)
     {
         for (j = 0; j < usernames.length; j++)
         {
-            var checkWriter = ' ' + range[i][writer - 1] + ' ';
+            var checkWriter = ' ' + range[i][writer - 1].toLowerCase() + ' ';
             if (checkWriter.indexOf(' ' + usernames[j] + ' ') >= 0)
             {
                 var checkDate = range[i][wDate - 1];
