@@ -30,6 +30,30 @@ function getActivityWriter(refresher, username)
     return parseWrittenActivity(activeDate, usernames, archive);
 }
 
+function getNumWritten(refresher, username)
+{
+    // All user names to search for.
+    var usernames = Array.prototype.slice.call(arguments, 1, arguments.length);
+    // Retrieve range of 'Archive' sheet
+    var aSheet = SpreadsheetApp.getActiveSpreadsheet()
+        .getSheetByName(archiveName)
+    var archive = aSheet.getRange(startRow, 1, aSheet.getLastRow(), writer)
+        .getValues();
+    // Count number of synopses by user.
+    var count = 0;
+    for (i = 0; i < archive.length; i++)
+    {
+        for (j = 0; j < usernames.length; j++)
+        {
+            var checkWriter = ' ' + archive[i][writer - 1] + ' ';
+            if (checkWriter.indexOf(' ' + usernames[j] + ' ') >= 0)
+            {
+                count++;
+            }
+        }
+    }
+    return count;
+}
 
 function parseWrittenActivity(date, usernames, range)
 {
