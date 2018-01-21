@@ -1,3 +1,15 @@
+function getIPRange()
+{
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(inProgressName)
+    return sheet.getRange(startRow, 1, sheet.getLastRow(), writer).getValues();
+}
+
+function getArchiveRange()
+{
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(archiveName)
+    return sheet.getRange(startRow, 1, sheet.getLastRow(), writer).getValues();
+}
+
 /**
  * Compares two date strings formatted as 'MM/DD/YYYY'.
  *

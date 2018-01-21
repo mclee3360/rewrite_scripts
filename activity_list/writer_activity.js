@@ -1,44 +1,8 @@
-// Sheet IDs and names
-var inProgressName = 'Synopses in Progress';
-var archiveName = 'Archive';
-// Row Numbers
-var startRow = 2;
-// Column Numbers
-var wDate = 1;
-var writer = 4;
-var p1Date = 7;
-var p1Editor = 8;
-var p2Date = 9;
-var p2Editor = 10;
-
-
-function getActivityWriter(refresher, username)
-{
-    // All user names to search for.
-    var usernames = Array.prototype.slice.call(arguments, 1, arguments.length);
-    // Parse 'In Progress' sheet
-    var ipSheet = SpreadsheetApp.getActiveSpreadsheet()
-        .getSheetByName(inProgressName)
-    var inProgress = ipSheet.getRange(startRow, 1, ipSheet.getLastRow(), writer)
-        .getValues();
-    var activeDate = parseWrittenActivity("N/A", usernames, inProgress);
-    // Parse 'Archive' sheet
-    var aSheet = SpreadsheetApp.getActiveSpreadsheet()
-        .getSheetByName(archiveName)
-    var archive = aSheet.getRange(startRow, 1, aSheet.getLastRow(), writer)
-        .getValues();
-    return parseWrittenActivity(activeDate, usernames, archive);
-}
-
 function getNumWritten(refresher, username)
 {
     // All user names to search for.
     var usernames = Array.prototype.slice.call(arguments, 1, arguments.length);
-    // Retrieve range of 'Archive' sheet
-    var aSheet = SpreadsheetApp.getActiveSpreadsheet()
-        .getSheetByName(archiveName)
-    var archive = aSheet.getRange(startRow, 1, aSheet.getLastRow(), writer)
-        .getValues();
+    var archive = getArchiveRange();
     // Count number of synopses by user.
     var count = 0;
     for (i = 0; i < archive.length; i++)
@@ -53,6 +17,18 @@ function getNumWritten(refresher, username)
         }
     }
     return count;
+}
+
+function getActivityWriter(refresher, username)
+{
+    // All user names to search for.
+    var usernames = Array.prototype.slice.call(arguments, 1, arguments.length);
+    // Parse 'In Progress' sheet
+    var inProgress = getIPRange();
+    var activeDate = parseWrittenActivity("N/A", usernames, inProgress);
+    // Parse 'Archive' sheet
+    var archive = getArchiveRange();
+    return parseWrittenActivity(activeDate, usernames, archive);
 }
 
 function parseWrittenActivity(date, usernames, range)
