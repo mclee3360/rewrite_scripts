@@ -1,4 +1,26 @@
 /**
+ * Gets whether a user was active (date of last activity is not more than
+ * two months prior to current date).
+ *
+ * @param date  the date to compare against (date of last activity).
+ * @return whether or not the user is active.
+ */
+function isActive(date)
+{
+    var today = new Date(Date.now());
+    var cutoff = new Date(today.setMonth(today.getMonth() - 2));
+    if (date == 'N/A')
+    {
+        return false;
+    }
+    if (date < cutoff)
+    {
+        return false;
+    }
+    return true;
+}
+
+/**
  * Gets a range of the In Progress sheet on the tracker.
  *
  * @return a range with the data from the In Progress sheet.
