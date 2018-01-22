@@ -1,3 +1,7 @@
+/**
+ * Constants used throughout the functions.
+ */
+
 // Sheet IDs and names
 var inProgressName = 'Synopses in Progress';
 var archiveName = 'Archive';
