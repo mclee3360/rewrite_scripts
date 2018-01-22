@@ -10,6 +10,12 @@ function getArchiveRange()
     return sheet.getRange(startRow, 1, sheet.getLastRow(), p2Editor).getValues();
 }
 
+function getAppsRange2018()
+{
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(apps2018Name)
+    return sheet.getRange(startRow, 1, sheet.getLastRow(), applicant).getValues();
+}
+
 function getUsernames(cell1, cell2)
 {
     var names = [cell1.toLowerCase()];
