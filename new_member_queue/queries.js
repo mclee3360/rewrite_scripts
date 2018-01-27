@@ -91,7 +91,7 @@ function getQueryContainsName(row, range, toGet)
  */
 function getQuery(range, from, condition)
 {
-    return "QUERY(" + range + ", \"SELECT " + from  + " WHERE " + condition + "\")";
+    return "QUERY(" + range + ", \"SELECT " + from  + " WHERE " + condition + "\", 0)";
 }
 
 /**
