@@ -128,7 +128,7 @@ function removeUsers(sheet, col, criteria)
             toDelete.push(i + 2);
         }
     }
-    for (i = 0; i < toDelete.length; i++)
+    for (i = toDelete.length - 1; i >= 0; i--)
     {
         sheet.deleteRow(toDelete[i]);
     }

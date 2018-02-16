@@ -15,7 +15,7 @@ function addToQueue(names)
             "=IF(EQ(IFERROR(QUERY(QUERY(Archive!A:B, \"SELECT B WHERE '\"&C"
                 + lastRow + "&\"' CONTAINS A\", 0), \"SELECT * LIMIT 1\"), 0), 0), "
                 + "IF(EQ(IFERROR(QUERY(QUERY('In Progress'!A:B, \"SELECT B "
-                + "WHERE '\"&C" + lastRow + "3&\"' CONTAINS A\", 0), \"SELECT * "
+                + "WHERE '\"&C" + lastRow + "&\"' CONTAINS A\", 0), \"SELECT * "
                 + "LIMIT 1\"), 0), 0), \"No\", \"Yes\"), \"Yes\")"
         ]);
     }
