@@ -87,8 +87,8 @@ function moveDocument(docname)
  */
 function updateTracker(values)
 {
-    var toUpdate = getArchive()
-        .getRange(sheet.getLastRow() - range + 1, checked_col, range, 1);
+    var sheet = getArchive();
+    var toUpdate = sheet.getRange(sheet.getLastRow() - range + 1, checked_col, range, 1);
     toUpdate.setValues(values);
 }
 
