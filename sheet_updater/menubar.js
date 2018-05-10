@@ -45,5 +45,7 @@ function addMembers()
     }
     addToDatabase(values);
     addToActivityList(values);
+    sheet.insertRowsAfter(lastRow, 1);
+    sheet.deleteRows(2, lastRow -1);
     SpreadsheetApp.getUi().alert("Successfully added new members");
 }
