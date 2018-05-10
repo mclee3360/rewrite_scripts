@@ -1,3 +1,6 @@
+/**
+ * Creates menu bar options for actions.
+ */
 function onOpen()
 {
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -14,6 +17,10 @@ function onOpen()
     sheet.addMenu("Actions", menus);
 }
 
+/**
+ * Adds a new member(s) to the database (sheet) of Rewrite members, as well
+ * as creates a spot for them on the activity list.
+ */
 function addMembers()
 {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(up_new);
@@ -23,44 +30,20 @@ function addMembers()
         SpreadsheetApp.getUi().alert("No new members listed to add");
         return;
     }
-    var range = sheet.getRange(2, 1, lastRow - 1, email_col);
+    var range = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn());
     var values = range.getValues();
-    var writers = [];
-    var editors = [];
-    var coordinators = [];
     for (i = 0; i < values.length; i++)
     {
-        var username = values[i][name_col -1];
-        var role = values[i][role_col - 1];
-        if (role == writer_title)
+        for (j = 0; j < values[i].length; j++)
         {
-            writers.push([username, ""]);
-        }
-        else if (role == editor_title)
-        {
-            editors.push([username, ""]);
-        }
-        else if (role == coord_title)
-        {
-            coordinators.push([username, ""]);
+            if (values[i][j] == "")
+            {
+                SpreadsheetApp.getUi().alert("All fields must be filled to add members");
+                return;
+            }
         }
     }
-    var members = writers.concat(editors.concat(coordinators));
-    sheet.insertRowAfter(lastRow);
-    sheet.deleteRows(2, lastRow - 1);
-    addToFolks(values);
-    addToQueue(members);
-    if (writers.length > 0)
-    {
-        addWriters(writers);
-    }
-    if (editors.length > 0)
-    {
-        addEditors(editors);
-    }
-    if (coordinators.length > 0)
-    {
-        addCoordinators(coordinators);
-    }
+    addToDatabase(values);
+    addToActivityList(values);
     SpreadsheetApp.getUi().alert("Successfully added new members");
 }
