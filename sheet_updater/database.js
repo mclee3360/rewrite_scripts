@@ -44,10 +44,10 @@ function updateUsernames(values)
     var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
     var last_col = sheet.getLastColumn();
     var last_row = sheet.getLastRow();
-    var names_range = sheet.getRange(2, db_name_col, sheet.getLastRow() - 1, 1);
+    var names_range = sheet.getRange(2, db_name_col, last_row - 1, 1);
     var names = names_range.getValues();
-    var all_names_range = sheet.getRange(2, db_name_col, sheet.getLastRow() - 1,
-        sheet.getLastColumn() - db_name_col + 1);
+    var all_names_range = sheet.getRange(2, db_name_col, last_row - 1,
+        last_col - db_name_col + 1);
     var all_names = all_names_range.getValues();
     var errors = [];
     var made_change = false;
@@ -91,7 +91,7 @@ function updateUsernames(values)
                 }
                 sheet.insertColumnsAfter(last_col, 1);
                 last_col++;
-                all_names_range = sheet.getRange(2, db_name_col, sheet.getLastRow() - 1,
+                all_names_range = sheet.getRange(2, db_name_col, last_row - 1,
                     sheet.getLastColumn() - db_name_col + 2);
                 all_names = all_names_range.getValues();
                 all_names[index][0] = new_name;
@@ -102,6 +102,7 @@ function updateUsernames(values)
     }
     all_names_range.setValues(all_names);
     SpreadsheetApp.flush();
+    sheet.getRange(2, 1, last_row - 1, last_col).sort([2, 5]);
     return errors;
 }
 
