@@ -19,6 +19,8 @@ var app_col = 4;
 var email_col = 5;
 var old_name_col = 1;
 var new_name_col = 2;
+// Database Columns
+var db_name_col = 5;
 // Roles
 var writer_title = "Writer";
 var editor_title = "Editor";
