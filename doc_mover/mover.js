@@ -13,6 +13,7 @@ function trigger()
     var sheet = getArchive();
     var archive = sheet.getRange(sheet.getLastRow() - range + 1, 1, range, checked_col)
         .getValues();
+    var urls = linkURL(sheet.getRange(sheet.getLastRow() - range + 1, link_col, range, 1));
 
     var status = [];
     var tocheck = [];
@@ -43,13 +44,10 @@ function trigger()
 
     for (i = 0; i < tocheck.length; i++)
     {
-        var row = archive[tocheck[i]];
-        var entry_name = row[entry_col - 1];
-        var writer = row[writer_col - 1];
-        var docname = entry_name + ' (' + writer + ')';
-        if (!moveDocument(docname))
+        var id = getId(urls[tocheck[i]][0]);
+        if (!moveDocument(id))
         {
-            missing.push(docname);
+            missing.push(archive[tocheck[i]][entry_col - 1]);
         }
     }
     updateTracker(status);
@@ -60,24 +58,65 @@ function trigger()
 }
 
 /**
+ * Returns the URL of a hyperlinked cell, if it's entered with hyperlink command.
+ * Supports ranges
+ *
+ * @param extract_range  the range of cells containing the hyperlinks.
+ */
+function linkURL(extract_range) {
+  var formulas = extract_range.getFormulas();
+  var output = [];
+  for (var i = 0; i < formulas.length; i++) {
+    var row = [];
+    for (var j = 0; j < formulas[0].length; j++) {
+      var url = formulas[i][j].match(/=hyperlink\("([^"]+)"/i);
+      row.push(url ? url[1] : '');
+    }
+    output.push(row);
+  }
+  return output
+}
+
+/**
+ * Gets the Google Drive file ID of a file from its URL.
+ *
+ * @param url  the URL from which to extract the ID.
+ * @return the file ID.
+ */
+function getId(url)
+{
+    if (url.indexOf(doc_url) > -1)
+    {
+        return url.split(doc_id_prefix)[1].split(doc_id_suffix)[0];
+    }
+    else if (url.indexOf(drive_url) > -1)
+    {
+        return url.split(drive_id_prefix)[1];
+    }
+    return "";
+}
+
+/**
  * Moves a document from the "Synopses (Ongoing)" folder to the
  * "Synopses (Finished)" folder.
  *
- * @param docname  the name of the document to move.
- * @return true if the document was found in the ongoing folder, false if not.
+ * @param id  the file ID
+ * @return true if the document was successfully added to finished folder,
+ *         false if not.
  */
-function moveDocument(docname)
+function moveDocument(id)
 {
-    var pFolder = getProgressFolder();
-    var search = pFolder.getFilesByName(docname);
-    if (search.hasNext())
+    try
     {
-        var file = search.next();
+        var file = DriveApp.getFileById(id);
         getFinishedFolder().addFile(file);
         getProgressFolder().removeFile(file);
         return true;
     }
-    return false;
+    catch (e)
+    {
+        return false;
+    }
 }
 
 /**
