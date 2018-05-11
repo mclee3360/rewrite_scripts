@@ -72,19 +72,20 @@ function updateNames()
             return;
         }
     }
-    if (!updateUsername(values[old_name_col - 1], values[new_name_col - 1]))
+    var old_name = values[old_name_col - 1];
+    var new_name = values[new_name_col - 1];
+    if (!updateUsername(old_name, new_name))
     {
-        var error_msg = "Could not find " + values[old_name_col - 1] + " to "
-            + "update username.";
+        var error_msg = "Could not find " + old_name + " to " + "update username.";
         SpreadsheetApp.getUi().alert(error_msg);
         return;
     }
+    updateTracker(old_name, new_name);
     if (lastRow == 2)
     {
         sheet.insertRowsAfter(lastRow, 1);
     }
     sheet.deleteRow(2);
-    var msg = "Successfully updated username for " + values[old_name_col - 1]
-        + " to " + values[new_name_col - 1];
+    var msg = "Successfully updated username for " + old_name + " to " + new_name + ".";
     SpreadsheetApp.getUi().alert(msg);
 }
