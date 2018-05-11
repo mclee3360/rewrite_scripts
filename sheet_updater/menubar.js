@@ -62,33 +62,29 @@ function updateNames()
         SpreadsheetApp.getUi().alert("No usernames listed to update");
         return;
     }
-    var range = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn());
-    var values = range.getValues();
+    var range = sheet.getRange(2, 1, 1, sheet.getLastColumn());
+    var values = range.getValues()[0];
     for (i = 0; i < values.length; i++)
     {
-        for (j = 0; j < values[i].length; j++)
+        if (values[i] == "")
         {
-            if (values[i][j] == "")
-            {
-                SpreadsheetApp.getUi().alert("All fields must be filled to update usernames");
-                return;
-            }
+            SpreadsheetApp.getUi().alert("All fields must be filled to update usernames");
+            return;
         }
     }
-    var errors = updateUsernames(values);
-    if (errors.length > 0)
+    if (!updateUsername(values[old_name_col - 1], values[new_name_col - 1]))
     {
-        var error_msg = "Could not find the following users to update: "
-        for (i = 0; i < errors.length; i++)
-        {
-            error_msg += ("\n - " + errors[i]);
-        }
+        var error_msg = "Could not find " + values[old_name_col - 1] + " to "
+            + "update username.";
         SpreadsheetApp.getUi().alert(error_msg);
+        return;
     }
-    else
+    if (lastRow == 2)
     {
         sheet.insertRowsAfter(lastRow, 1);
-        sheet.deleteRows(2, lastRow -1);
-        SpreadsheetApp.getUi().alert("Successfully updated all usernames");
     }
+    sheet.deleteRow(2);
+    var msg = "Successfully updated username for " + values[old_name_col - 1]
+        + " to " + values[new_name_col - 1];
+    SpreadsheetApp.getUi().alert(msg);
 }
