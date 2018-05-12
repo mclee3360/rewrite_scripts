@@ -66,6 +66,70 @@ function addActivity(values, sheet)
 }
 
 /**
+ * Updates the activity list with a user's new MAL ID.
+ *
+ * @param user  the user to update.
+ * @param id    the user's new ID.
+ * @param role  the user's role.
+ * @return if the user was found and updated successfully.
+ */
+function updateActivityId(user, id, role)
+{
+    var spreadsheet = SpreadsheetApp.openById(activity_list_id);
+    var sheet;
+    switch (role)
+    {
+        case writer_title:
+            sheet = spreadsheet.getSheetByName(al_writers);
+            break;
+        case editor_title:
+            sheet = spreadsheet.getSheetByName(al_editors);
+            break;
+        case coord_title:
+            sheet = spreadsheet.getSheetByName(al_coordinators);
+            break;
+        case contrib_title:
+            sheet = spreadsheet.getSheetByName(al_contributors);
+            break;
+        default:
+            return false;
+    }
+    return updateActivitySheetId(user, id, sheet);
+}
+
+/**
+ * Updates the ID being tracked for the user.
+ *
+ * @param user   the user to update ID.
+ * @param id     the user's new ID.
+ * @param sheet  the sheet to update on.
+ * @return if the user was found and successfully updated.
+ */
+function updateActivitySheetId(user, id, sheet)
+{
+    var range = sheet.getRange(2, al_user_col, sheet.getLastRow() - 1, 1);
+    var names = range.getValues();
+    var formulas = range.getFormulas();
+    var index = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            index = i;
+            break;
+        }
+    }
+    if (index < 0)
+    {
+        return false;
+    }
+    formulas[i][0] = getHyperlinkFunction(id);
+    range.setFormulas(formulas);
+    SpreadsheetApp.flush();
+    return true;
+}
+
+/**
  * Gets the formula for getting the hyperlink to the user's MAL profile.
  *
  * @param id  the user's MAL ID.

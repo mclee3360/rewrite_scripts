@@ -14,6 +14,9 @@ function onOpen()
         name: "Update Email",
         functionName : "updateEmail"
     }, {
+        name: "Update ID",
+        functionName : "updateID"
+    }, {
         name: "Change Role",
         functionName: "changeRoles"
     }];
@@ -116,7 +119,7 @@ function updateEmail()
         }
     }
     var user = values[user_col - 1];
-    var email = values[new_email_col - 1];
+    var email = values[new_info_col - 1];
     if (!updateDatabaseEmail(user, email))
     {
         var error_msg = "Could not find " + user + " to " + "update email.";
@@ -129,5 +132,53 @@ function updateEmail()
     }
     sheet.deleteRow(2);
     var msg = "Successfully updated email for " + user + " to " + email + ".";
+    SpreadsheetApp.getUi().alert(msg);
+}
+
+/**
+ * Updates a user's ID. Only one at a time.
+ */
+function updateID()
+{
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(up_id);
+    var lastRow = sheet.getLastRow();
+    if (lastRow == 1)
+    {
+        SpreadsheetApp.getUi().alert("No IDs listed to update");
+        return;
+    }
+    var range = sheet.getRange(2, 1, 1, sheet.getLastColumn());
+    var values = range.getValues()[0];
+    for (i = 0; i < values.length; i++)
+    {
+        if (values[i] == "")
+        {
+            SpreadsheetApp.getUi().alert("All fields must be filled to update ID");
+            return;
+        }
+    }
+    var user = values[user_col - 1];
+    var id = values[new_info_col - 1];
+    var role = getUserRole(user, id);
+    if (role == null)
+    {
+        var error_msg = "Could not find " + user + " to " + "update ID.";
+        SpreadsheetApp.getUi().alert(error_msg);
+        return;
+    }
+    if (!updateActivityId(user, id, role))
+    {
+        var error_msg = "Could not find " + user + " in Activity List to update"
+            + " ID. Did not update in database.";
+        SpreadsheetApp.getUi().alert(error_msg);
+        return;
+    }
+    updateDatabaseId(user, id);
+    if (lastRow == 2)
+    {
+        sheet.insertRowsAfter(lastRow, 1);
+    }
+    sheet.deleteRow(2);
+    var msg = "Successfully updated ID for " + user + " to " + id + ".";
     SpreadsheetApp.getUi().alert(msg);
 }

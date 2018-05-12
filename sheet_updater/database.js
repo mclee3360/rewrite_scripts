@@ -124,8 +124,71 @@ function updateDatabaseEmail(user, email)
     // Update email
     var email_range = sheet.getRange(2, db_email_col, last_row - 1, 1);
     var emails = email_range.getValues();
-    emails[i][0] = email;
+    emails[row][0] = email;
     email_range.setValues(emails);
+    SpreadsheetApp.flush();
+    return true;
+}
+
+/**
+ * Gets a user's role.
+ *
+ * @param user  the user to check.
+ * @return the user's role, null if the user is not found.
+ */
+function getUserRole(user)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var last_row = sheet.getLastRow();
+    // Locate row of user; return null if not found.
+    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
+    var row = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+    {
+        return null;
+    }
+    return sheet.getRange(2, db_role_col, last_row - 1, 1).getValues()[i][0];
+}
+
+/**
+ * Updates a user's MAL ID in the database.
+ *
+ * @param user  the user to update.
+ * @param id    the user's ID.
+ * @return if the user was found and updated successfully.
+ */
+function updateDatabaseId(user, id)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var last_row = sheet.getLastRow();
+    // Locate row of user; return null if not found.
+    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
+    var row = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+    {
+        return false;
+    }
+    // Update ID and get role.
+    var range = sheet.getRange(2, db_id_col, last_row - 1, 1);
+    var ids = range.getValues();
+    ids[row][0] = id;
+    range.setValues(ids);
     SpreadsheetApp.flush();
     return true;
 }
