@@ -8,10 +8,13 @@ function onOpen()
         name: "Add Members",
         functionName : "addMembers"
     }, {
-        name: "Update Usernames",
+        name: "Update Username",
         functionName : "updateNames"
     }, {
-        name: "Change Roles",
+        name: "Update Email",
+        functionName : "updateEmail"
+    }, {
+        name: "Change Role",
         functionName: "changeRoles"
     }];
     sheet.addMenu("Actions", menus);
@@ -51,7 +54,7 @@ function addMembers()
 }
 
 /**
- * Updates members' usernames in the database.
+ * Updates a member's username in the database and tracker. Only one at a time.
  */
 function updateNames()
 {
@@ -87,5 +90,44 @@ function updateNames()
     }
     sheet.deleteRow(2);
     var msg = "Successfully updated username for " + old_name + " to " + new_name + ".";
+    SpreadsheetApp.getUi().alert(msg);
+}
+
+/**
+ * Updates a user's email. Only one at a time.
+ */
+function updateEmail()
+{
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(up_email);
+    var lastRow = sheet.getLastRow();
+    if (lastRow == 1)
+    {
+        SpreadsheetApp.getUi().alert("No emails listed to update");
+        return;
+    }
+    var range = sheet.getRange(2, 1, 1, sheet.getLastColumn());
+    var values = range.getValues()[0];
+    for (i = 0; i < values.length; i++)
+    {
+        if (values[i] == "")
+        {
+            SpreadsheetApp.getUi().alert("All fields must be filled to update email");
+            return;
+        }
+    }
+    var user = values[user_col - 1];
+    var email = values[new_email_col - 1];
+    if (!updateDatabaseEmail(user, email))
+    {
+        var error_msg = "Could not find " + user + " to " + "update email.";
+        SpreadsheetApp.getUi().alert(error_msg);
+        return;
+    }
+    if (lastRow == 2)
+    {
+        sheet.insertRowsAfter(lastRow, 1);
+    }
+    sheet.deleteRow(2);
+    var msg = "Successfully updated email for " + user + " to " + email + ".";
     SpreadsheetApp.getUi().alert(msg);
 }

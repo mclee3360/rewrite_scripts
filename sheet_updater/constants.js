@@ -13,6 +13,7 @@ var progress = "Synopses in Progress";
 // Updater Sheet Names
 var up_new = "New Users";
 var up_user = "Username Change";
+var up_email = "Email Change";
 var up_role = "Role Change";
 // Updater Sheet Columns
 var id_col = 1;
@@ -22,8 +23,11 @@ var app_col = 4;
 var email_col = 5;
 var old_name_col = 1;
 var new_name_col = 2;
+var user_col = 1;
+var new_email_col = 2;
 // Database Columns
 var db_name_col = 5;
+var db_email_col = 3;
 // Tracker Columns
 var writer_col = 4;
 var e1_col = 8;

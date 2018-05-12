@@ -55,8 +55,9 @@ function updateUsername(old_name, new_name)
     var row = -1;
     for (i = 0; i < names.length; i++)
     {
-        if (names[i][0] == old_name)
+        if (checkNames(old_name, names[i][0]))
         {
+            old_name = names[i][0];
             row = i;
             break;
         }
@@ -91,6 +92,41 @@ function updateUsername(old_name, new_name)
     all_names_range.setValues(all_names);
     SpreadsheetApp.flush();
     sheet.getRange(2, 1, last_row - 1, last_col).sort([2, 5]);
+    return true;
+}
+
+/**
+ * Updates a user's email in the database.
+ *
+ * @param user   the user to update.
+ * @param email  the new email.
+ * @return true if the user was found, false if not.
+ */
+function updateDatabaseEmail(user, email)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var last_row = sheet.getLastRow();
+    // Locate row of user; return false if not found.
+    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
+    var row = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+    {
+        return false;
+    }
+    // Update email
+    var email_range = sheet.getRange(2, db_email_col, last_row - 1, 1);
+    var emails = email_range.getValues();
+    emails[i][0] = email;
+    email_range.setValues(emails);
+    SpreadsheetApp.flush();
     return true;
 }
 
