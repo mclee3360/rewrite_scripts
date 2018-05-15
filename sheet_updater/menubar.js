@@ -19,6 +19,9 @@ function onOpen()
     }, {
         name : "Change Role",
         functionName : "changeRoles"
+    }, null, {
+        name : "Update Writer App IDs",
+        functionName : "updateAppIds"
     }];
     sheet.addMenu("Actions", menus);
 }
