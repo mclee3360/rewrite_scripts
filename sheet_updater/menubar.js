@@ -5,20 +5,20 @@ function onOpen()
 {
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
     var menus = [{
-        name: "Add Members",
-        functionName : "addMembers"
+        name : "Add Members",
+        functionName : "addMember"
     }, {
-        name: "Update Username",
+        name : "Update Username",
         functionName : "updateNames"
     }, {
-        name: "Update Email",
+        name : "Update Email",
         functionName : "updateEmail"
     }, {
-        name: "Update ID",
+        name : "Update ID",
         functionName : "updateID"
     }, {
-        name: "Change Role",
-        functionName: "changeRoles"
+        name : "Change Role",
+        functionName : "changeRoles"
     }];
     sheet.addMenu("Actions", menus);
 }
@@ -27,7 +27,7 @@ function onOpen()
  * Adds a new member(s) to the database (sheet) of Rewrite members, as well
  * as creates a spot for them on the activity list.
  */
-function addMembers()
+function addMember()
 {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(up_new);
     var lastRow = sheet.getLastRow();
@@ -36,24 +36,29 @@ function addMembers()
         SpreadsheetApp.getUi().alert("No new members listed to add");
         return;
     }
-    var range = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn());
-    var values = range.getValues();
+    var range = sheet.getRange(2, 1, 1, sheet.getLastColumn());
+    var values = range.getValues()[0];
     for (i = 0; i < values.length; i++)
     {
-        for (j = 0; j < values[i].length; j++)
+        if (values[i] == "")
         {
-            if (values[i][j] == "")
-            {
-                SpreadsheetApp.getUi().alert("All fields must be filled to add members");
-                return;
-            }
+            SpreadsheetApp.getUi().alert("All fields must be filled to add members");
+            return;
         }
     }
-    addToDatabase(values);
-    addToActivityList(values);
-    sheet.insertRowsAfter(lastRow, 1);
-    sheet.deleteRows(2, lastRow -1);
-    SpreadsheetApp.getUi().alert("Successfully added new members");
+    var user = values[name_col - 1];
+    var role = values[role_col - 1];
+    var id = values[id_col - 1];
+    var email = values[email_col - 1];
+    var appDate = values[app_col - 1];
+    addToDatabase(user, id, role, email);
+    addToActivityList(id, role, appDate);
+    if (lastRow == 2)
+    {
+        sheet.insertRowsAfter(lastRow, 1);
+    }
+    sheet.deleteRow(2);
+    SpreadsheetApp.getUi().alert("Successfully added " + user + " as a new member");
 }
 
 /**

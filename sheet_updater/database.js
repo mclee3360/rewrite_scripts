@@ -1,33 +1,22 @@
 /**
- * Adds new members to the database sheet.
+ * Adds new member to the database sheet.
  *
- * @param values  the rows to add.
+ * @param user   the member's username.
+ * @param id     the member's id.
+ * @param role   the member's role.
+ * @param email  the member's email.
  */
-function addToDatabase(values)
+function addToDatabase(user, id, role, email)
 {
     var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
     var last_row = sheet.getLastRow();
-    sheet.insertRowsAfter(last_row, values.length);
-    var current_row = last_row;
-    var new_values = [];
-    var formulas = [];
-    for (i = 0; i < values.length; i++)
-    {
-        new_values.push(
-            [
-                values[i][id_col - 1],
-                values[i][role_col - 1],
-                values[i][email_col - 1],
-                "",
-                values[i][name_col - 1]
-            ]
-        );
-        formulas.push([getUsernamesFunction(current_row + 1)]);
-        current_row++;
-    }
-    sheet.getRange("A" + (last_row + 1) + ":E" + current_row).setValues(new_values);
+    sheet.insertRowAfter(last_row);
+    last_row++;
+    var new_values = [[id, role, email, "", user]];
+    var formulas = [[getUsernamesFunction(last_row)]];
+    sheet.getRange("A" + last_row + ":E" + last_row).setValues(new_values);
     SpreadsheetApp.flush();
-    sheet.getRange("D" + (last_row + 1) + ":D" + current_row).setFormulas(formulas);
+    sheet.getRange("D" + last_row + ":D" + last_row).setFormulas(formulas);
     SpreadsheetApp.flush();
     sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).sort([2, 5]);
 }
