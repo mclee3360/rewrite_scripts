@@ -183,6 +183,26 @@ function updateDatabaseId(user, id)
 }
 
 /**
+ * Check if a user exists in the database.
+ *
+ * @param user  the username of the user to check.
+ * @return if the user already exists.
+ */
+function doesExist(user)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var names = sheet.getRange(2, db_name_col, sheet.getLastRow() - 1, 1).getValues();
+    for (var i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Gets the formula for concatenating all versions of the user's usernames
  * (includes previous ones) into a "|" delimited string.
  *

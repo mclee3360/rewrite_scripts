@@ -54,8 +54,27 @@ function addMember()
     var id = values[id_col - 1];
     var email = values[email_col - 1];
     var appDate = values[app_col - 1];
+    if (doesExist(user))
+    {
+        SpreadsheetApp.getUi().alert("User " + user + " already exists");
+        return;
+    }
     addToDatabase(user, id, role, email);
     addToActivityList(id, role, appDate);
+    switch (role)
+    {
+        case writer_title:
+            addWriterPerm(email);
+            break;
+        case editor_title:
+            addEditorPerm(email);
+            break;
+        case coord_title:
+            addCoordinatorPerm(email);
+            break;
+        default:
+            break;
+    }
     if (lastRow == 2)
     {
         sheet.insertRowsAfter(lastRow, 1);
