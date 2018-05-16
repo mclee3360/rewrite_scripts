@@ -148,6 +148,34 @@ function getUserRole(user)
 }
 
 /**
+ * Gets a user's email.
+ *
+ * @param user  the user to check.
+ * @return the user's email, null if the user is not found.
+ */
+function getUserEmail(user)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var last_row = sheet.getLastRow();
+    // Locate row of user; return null if not found.
+    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
+    var row = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+    {
+        return null;
+    }
+    return sheet.getRange(2, db_email_col, last_row - 1, 1).getValues()[i][0];
+}
+
+/**
  * Updates a user's MAL ID in the database.
  *
  * @param user  the user to update.

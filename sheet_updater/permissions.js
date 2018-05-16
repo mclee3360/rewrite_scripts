@@ -33,10 +33,26 @@ function addWriterPerm(email)
  */
 function removeWriterPerm(email)
 {
-    DriveApp.getFolderById(rewrite_docs_id).removeViewer(email);
-    DriveApp.getFolderById(ongoing_id).removeEditor(email);
-    DriveApp.getFolderById(finished_id).removeEditor(email);
-    DriveApp.getFileById(tracker_id).removeEditor(email);
+    try
+    {
+        DriveApp.getFolderById(rewrite_docs_id).removeViewer(email);
+    }
+    catch (e) { } // In case email didn't have permissions already.
+    try
+    {
+        DriveApp.getFolderById(ongoing_id).removeEditor(email);
+    }
+    catch (e) { } // In case email didn't have permissions already.
+    try
+    {
+        DriveApp.getFolderById(finished_id).removeEditor(email);
+    }
+    catch (e) { } // In case email didn't have permissions already.
+    try
+    {
+        DriveApp.getFileById(tracker_id).removeEditor(email);
+    }
+    catch (e) { } // In case email didn't have permissions already.
 }
 
 /**
@@ -96,8 +112,16 @@ function addCoordinatorPerm(email)
  */
 function removeCoordinatorPerm(email)
 {
-    DriveApp.getFolderById(rewrite_docs_id).removeEditor(email);
-    DriveApp.getFolderById(coord_folder_id).removeEditor(email);
+    try
+    {
+        DriveApp.getFolderById(rewrite_docs_id).removeEditor(email);
+    }
+    catch (e) { } // In case email didn't have permissions already.
+    try
+    {
+        DriveApp.getFolderById(coord_folder_id).removeEditor(email);
+    }
+    catch (e) { } // In case email didn't have permissions already.
 }
 
 function updateAppIds()

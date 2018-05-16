@@ -147,11 +147,30 @@ function updateEmail()
     }
     var user = values[user_col - 1];
     var email = values[new_info_col - 1];
+    var old_email = getUserEmail(user);
     if (!updateDatabaseEmail(user, email))
     {
         var error_msg = "Could not find " + user + " to " + "update email.";
         SpreadsheetApp.getUi().alert(error_msg);
         return;
+    }
+    var role = getUserRole(user);
+    switch (role)
+    {
+        case writer_title:
+            removeWriterPerm(old_email);
+            addWriterPerm(email);
+            break;
+        case editor_title:
+            removeEditorPerm(old_email);
+            addEditorPerm(email);
+            break;
+        case coord_title:
+            removeCoordinatorPerm(old_email);
+            addCoordinatorPerm(email);
+            break;
+        default:
+            break;
     }
     if (lastRow == 2)
     {
