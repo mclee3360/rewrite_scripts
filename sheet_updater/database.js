@@ -213,16 +213,16 @@ function updateDatabaseId(user, id)
 /**
  * Check if a user exists in the database.
  *
- * @param user  the username of the user to check.
+ * @param id  the MAL ID of the user to check.
  * @return if the user already exists.
  */
-function doesExist(user)
+function doesExist(id)
 {
     var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
-    var names = sheet.getRange(2, db_name_col, sheet.getLastRow() - 1, 1).getValues();
-    for (var i = 0; i < names.length; i++)
+    var ids = sheet.getRange(2, db_id_col, sheet.getLastRow() - 1, 1).getValues();
+    for (var i = 0; i < ids.length; i++)
     {
-        if (checkNames(user, names[i][0]))
+        if (id == ids[i][0])
         {
             return true;
         }

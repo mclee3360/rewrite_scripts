@@ -54,9 +54,9 @@ function addMember()
     var id = values[id_col - 1];
     var email = values[email_col - 1];
     var appDate = values[app_col - 1];
-    if (doesExist(user))
+    if (doesExist(id))
     {
-        SpreadsheetApp.getUi().alert("User " + user + " already exists");
+        SpreadsheetApp.getUi().alert("User with ID " + id + " already exists");
         return;
     }
     addToDatabase(user, id, role, email);
