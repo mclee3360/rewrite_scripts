@@ -26,6 +26,8 @@ var old_name_col = 1;
 var new_name_col = 2;
 var user_col = 1;
 var new_info_col = 2;
+var old_role_col = 2;
+var new_role_col = 3;
 // Database Columns
 var db_id_col = 1;
 var db_role_col = 2;

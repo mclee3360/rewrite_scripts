@@ -187,6 +187,7 @@ function updateDatabaseRole(user, role)
     range.setValues(roles);
     SpreadsheetApp.flush();
     sheet.getRange(2, 1, last_row - 1, sheet.getLastColumn()).sort([2, 5]);
+    return true;
 }
 
 /**

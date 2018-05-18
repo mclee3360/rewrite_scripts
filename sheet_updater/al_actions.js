@@ -108,9 +108,13 @@ function updateActivitySheetId(user, id, sheet)
 }
 
 /**
+ * Updates a user's role in the activity list.
  *
+ * @param user      the username of the user to update.
+ * @param old_role  the old role of the user to update.
+ * @param new_role  the new role of the user to update.
  */
-function updateRole(user, old_role, new_role)
+function updateActivityRole(user, old_role, new_role)
 {
     var spreadsheet = SpreadsheetApp.openById(activity_list_id);
     var sheet1;
