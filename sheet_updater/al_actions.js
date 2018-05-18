@@ -108,6 +108,48 @@ function updateActivitySheetId(user, id, sheet)
 }
 
 /**
+ * Moves a user from one sheet to another for active roles within Rewrite.
+ * Excludes Contributor role due to differences in sheet structure.
+ *
+ * @param user       the username of the user to move.
+ * @param fromSheet  the sheet to move the user from.
+ * @param toSheet    the sheet to move the user to.
+ */
+function updateRole(user, fromSheet, toSheet)
+{
+    var last_row = fromSheet.getLastRow();
+    var values = fromSheet.getRange(2, 1, last_row - 1, al_last_col).getValues();
+    var formulas = fromSheet.getRange(2, al_user_col, last_row - 1, 1).getFormulas();
+    var index = -1;
+    for (var i = 0; i < values.length; i++)
+    {
+        if (checkNames(user, values[i][al_user_col - 1]))
+        {
+            index = i;
+            break;
+        }
+    }
+    if (index < 0)
+    {
+        return false;
+    }
+    var formula = formulas[index];
+    var value = values[index];
+    values = values.slice(0, index).concat(values.slice(index + 1));
+    formulas = formulas.slice(0, index).concat(formulas.slice(index + 1));
+    fromSheet.getRange(2, 1, last_row - 2, al_last_col).setValues(values);
+    fromSheet.getRange(2, al_user_col, last_row - 2, 1).setFormulas(formulas);
+    fromSheet.deleteRow(last_row);
+    last_row = toSheet.getLastRow();
+    toSheet.insertRowAfter(last_row);
+    last_row++;
+    toSheet.getRange(last_row, 1, 1, al_last_col).setValues([value]);
+    toSheet.getRange(last_row, 1, 1, 1).setFormulas([formula]);
+    SpreadsheetApp.flush();
+    toSheet.getRange("A2:E" + last_row).sort(1);
+}
+
+/**
  * Gets the formula for getting the hyperlink to the user's MAL profile.
  *
  * @param id  the user's MAL ID.

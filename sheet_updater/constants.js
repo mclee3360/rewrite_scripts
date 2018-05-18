@@ -38,6 +38,7 @@ var e2_col = 10;
 var coord_col = 12;
 // Activity List Columns
 var al_user_col = 1;
+var al_last_col = 4;
 // Roles
 var writer_title = "Writer";
 var editor_title = "Editor";

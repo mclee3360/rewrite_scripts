@@ -120,6 +120,96 @@ function updateDatabaseEmail(user, email)
 }
 
 /**
+ * Updates a user's MAL ID in the database.
+ *
+ * @param user  the user to update.
+ * @param id    the user's ID.
+ * @return if the user was found and updated successfully.
+ */
+function updateDatabaseId(user, id)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var last_row = sheet.getLastRow();
+    // Locate row of user; return null if not found.
+    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
+    var row = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+    {
+        return false;
+    }
+    // Update ID and get role.
+    var range = sheet.getRange(2, db_id_col, last_row - 1, 1);
+    var ids = range.getValues();
+    ids[row][0] = id;
+    range.setValues(ids);
+    SpreadsheetApp.flush();
+    return true;
+}
+
+/**
+ * Updates a user's role in the database.
+ *
+ * @param user  the user to update.
+ * @param role  the user's new role.
+ * @return if the user was found and updated successfully.
+ */
+function updateDatabaseRole(user, role)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var last_row = sheet.getLastRow();
+    // Locate row of user; return null if not found.
+    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
+    var row = -1;
+    for (i = 0; i < names.length; i++)
+    {
+        if (checkNames(user, names[i][0]))
+        {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+    {
+        return false;
+    }
+    // Update ID and get role.
+    var range = sheet.getRange(2, db_role_col, last_row - 1, 1);
+    var roles = range.getValues();
+    roles[row][0] = role;
+    range.setValues(roles);
+    SpreadsheetApp.flush();
+    sheet.getRange(2, 1, last_row - 1, sheet.getLastColumn()).sort([2, 5]);
+}
+
+/**
+ * Check if a user exists in the database.
+ *
+ * @param id  the MAL ID of the user to check.
+ * @return if the user already exists.
+ */
+function doesExist(id)
+{
+    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
+    var ids = sheet.getRange(2, db_id_col, sheet.getLastRow() - 1, 1).getValues();
+    for (var i = 0; i < ids.length; i++)
+    {
+        if (id == ids[i][0])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Gets a user's role.
  *
  * @param user  the user to check.
@@ -173,61 +263,6 @@ function getUserEmail(user)
         return null;
     }
     return sheet.getRange(2, db_email_col, last_row - 1, 1).getValues()[i][0];
-}
-
-/**
- * Updates a user's MAL ID in the database.
- *
- * @param user  the user to update.
- * @param id    the user's ID.
- * @return if the user was found and updated successfully.
- */
-function updateDatabaseId(user, id)
-{
-    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
-    var last_row = sheet.getLastRow();
-    // Locate row of user; return null if not found.
-    var names = sheet.getRange(2, db_name_col, last_row - 1, 1).getValues();
-    var row = -1;
-    for (i = 0; i < names.length; i++)
-    {
-        if (checkNames(user, names[i][0]))
-        {
-            row = i;
-            break;
-        }
-    }
-    if (row < 0)
-    {
-        return false;
-    }
-    // Update ID and get role.
-    var range = sheet.getRange(2, db_id_col, last_row - 1, 1);
-    var ids = range.getValues();
-    ids[row][0] = id;
-    range.setValues(ids);
-    SpreadsheetApp.flush();
-    return true;
-}
-
-/**
- * Check if a user exists in the database.
- *
- * @param id  the MAL ID of the user to check.
- * @return if the user already exists.
- */
-function doesExist(id)
-{
-    var sheet = SpreadsheetApp.openById(db_id).getSheetByName(db_sheet);
-    var ids = sheet.getRange(2, db_id_col, sheet.getLastRow() - 1, 1).getValues();
-    for (var i = 0; i < ids.length; i++)
-    {
-        if (id == ids[i][0])
-        {
-            return true;
-        }
-    }
-    return false;
 }
 
 /**
