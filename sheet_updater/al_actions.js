@@ -135,9 +135,10 @@ function updateRole(user, fromSheet, toSheet)
     }
     var formula = formulas[index];
     var value = values[index];
+    values = fromSheet.getRange(2, 1, last_row - 1, al_last_col + 1).getValues();
     values = values.slice(0, index).concat(values.slice(index + 1));
     formulas = formulas.slice(0, index).concat(formulas.slice(index + 1));
-    fromSheet.getRange(2, 1, last_row - 2, al_last_col).setValues(values);
+    fromSheet.getRange(2, 1, last_row - 2, al_last_col + 1).setValues(values);
     fromSheet.getRange(2, al_user_col, last_row - 2, 1).setFormulas(formulas);
     fromSheet.deleteRow(last_row);
     last_row = toSheet.getLastRow();
