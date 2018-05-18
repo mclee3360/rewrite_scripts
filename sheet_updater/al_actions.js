@@ -108,14 +108,71 @@ function updateActivitySheetId(user, id, sheet)
 }
 
 /**
+ *
+ */
+function updateRole(user, old_role, new_role)
+{
+    var spreadsheet = SpreadsheetApp.openById(activity_list_id);
+    var sheet1;
+    switch (old_role)
+    {
+        case writer_title:
+            sheet1 = spreadsheet.getSheetByName(al_writers);
+            break;
+        case editor_title:
+            sheet1 = spreadsheet.getSheetByName(al_editors);
+            break;
+        case coord_title:
+            sheet1 = spreadsheet.getSheetByName(al_coordinators);
+            break;
+        case contrib_title:
+            sheet1 = spreadsheet.getSheetByName(al_contributors);
+            break;
+        default:
+            break;
+    }
+    var sheet2;
+    switch (new_role)
+    {
+        case writer_title:
+            sheet2 = spreadsheet.getSheetByName(al_writers);
+            break;
+        case editor_title:
+            sheet2 = spreadsheet.getSheetByName(al_editors);
+            break;
+        case coord_title:
+            sheet2 = spreadsheet.getSheetByName(al_coordinators);
+            break;
+        case contrib_title:
+            sheet2 = spreadsheet.getSheetByName(al_contributors);
+            break;
+        default:
+            break;
+    }
+    if (old_role == contrib_title)
+    {
+        unretire(user, sheet1, sheet2);
+    }
+    else if (new_role == contrib_title)
+    {
+        retire(user, old_role, sheet1, sheet2);
+    }
+    else
+    {
+        moveRole(user, sheet1, sheet2);
+    }
+}
+
+/**
  * Moves a user from one sheet to another for active roles within Rewrite.
  * Excludes Contributor role due to differences in sheet structure.
  *
  * @param user       the username of the user to move.
  * @param fromSheet  the sheet to move the user from.
  * @param toSheet    the sheet to move the user to.
+ * @return whether or not the user was successfully found and moved.
  */
-function updateRole(user, fromSheet, toSheet)
+function moveRole(user, fromSheet, toSheet)
 {
     var last_row = fromSheet.getLastRow();
     var values = fromSheet.getRange(2, 1, last_row - 1, al_last_col).getValues();
@@ -141,6 +198,98 @@ function updateRole(user, fromSheet, toSheet)
     fromSheet.getRange(2, 1, last_row - 2, al_last_col + 1).setValues(values);
     fromSheet.getRange(2, al_user_col, last_row - 2, 1).setFormulas(formulas);
     fromSheet.deleteRow(last_row);
+    last_row = toSheet.getLastRow();
+    toSheet.insertRowAfter(last_row);
+    last_row++;
+    toSheet.getRange(last_row, 1, 1, al_last_col).setValues([value]);
+    toSheet.getRange(last_row, 1, 1, 1).setFormulas([formula]);
+    SpreadsheetApp.flush();
+    toSheet.getRange("A2:E" + last_row).sort(1);
+}
+
+/**
+ * Moves a user to the contributor sheet.
+ *
+ * @param user       the username of the user to move.
+ * @param role       the (former) role of the user to move.
+ * @param fromSheet  the sheet to move the user from.
+ * @param cSheet     the sheet for contributors.
+ * @return whether or not the user was successfully found and moved.
+ */
+function retire(user, role, fromSheet, cSheet)
+{
+    var last_row = fromSheet.getLastRow();
+    var values = fromSheet.getRange(2, 1, last_row - 1, al_last_col).getValues();
+    var formulas = fromSheet.getRange(2, al_user_col, last_row - 1, 1).getFormulas();
+    var index = -1;
+    for (var i = 0; i < values.length; i++)
+    {
+        if (checkNames(user, values[i][al_user_col - 1]))
+        {
+            index = i;
+            break;
+        }
+    }
+    if (index < 0)
+    {
+        return false;
+    }
+    var formula = formulas[index];
+    var value = values[index];
+    value = ["", value[al_date_col - 1], role, value[al_note_col - 1]];
+    // Remove row from original sheet.
+    values = fromSheet.getRange(2, 1, last_row - 1, al_last_col + 1).getValues();
+    values = values.slice(0, index).concat(values.slice(index + 1));
+    formulas = formulas.slice(0, index).concat(formulas.slice(index + 1));
+    fromSheet.getRange(2, 1, last_row - 2, al_last_col + 1).setValues(values);
+    fromSheet.getRange(2, al_user_col, last_row - 2, 1).setFormulas(formulas);
+    fromSheet.deleteRow(last_row);
+    // Add to contributor sheet.
+    last_row = cSheet.getLastRow();
+    cSheet.insertRowAfter(last_row);
+    last_row++;
+    cSheet.getRange(last_row, 1, 1, al_last_col).setValues([value]);
+    cSheet.getRange(last_row, 1, 1, 1).setFormulas([formula]);
+    SpreadsheetApp.flush();
+    cSheet.getRange("A2:D" + last_row).sort([3, 1]);
+}
+
+/**
+ * Moves a user out of the contributor sheet.
+ *
+ * @param user     the username of the user to move.
+ * @param cSheet   the sheet for contributors.
+ * @param toSheet  the sheet to move the user to.
+ * @return whether or not the user was successfully found and moved.
+ */
+function unretire(user, cSheet, toSheet)
+{
+    var last_row = cSheet.getLastRow();
+    var values = cSheet.getRange(2, 1, last_row - 1, al_last_col).getValues();
+    var formulas = cSheet.getRange(2, al_user_col, last_row - 1, 1).getFormulas();
+    var index = -1;
+    for (var i = 0; i < values.length; i++)
+    {
+        if (checkNames(user, values[i][al_user_col - 1]))
+        {
+            index = i;
+            break;
+        }
+    }
+    if (index < 0)
+    {
+        return false;
+    }
+    var formula = formulas[index];
+    var value = values[index];
+    value = ["", value[al_date_col - 1], "", value[al_note_col - 1]];
+    // Remove row from original sheet.
+    values = values.slice(0, index).concat(values.slice(index + 1));
+    formulas = formulas.slice(0, index).concat(formulas.slice(index + 1));
+    cSheet.getRange(2, 1, last_row - 2, al_last_col).setValues(values);
+    cSheet.getRange(2, al_user_col, last_row - 2, 1).setFormulas(formulas);
+    cSheet.deleteRow(last_row);
+    // Add to contributor sheet.
     last_row = toSheet.getLastRow();
     toSheet.insertRowAfter(last_row);
     last_row++;

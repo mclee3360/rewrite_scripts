@@ -39,8 +39,10 @@ var coord_col = 12;
 // Activity List Columns
 var al_user_col = 1;
 var al_last_col = 4;
+var al_date_col = 2;
+var al_note_col = 4;
 // Roles
 var writer_title = "Writer";
 var editor_title = "Editor";
 var coord_title = "Coordinator";
-var contrib_title = "Contributer";
+var contrib_title = "Contributor";
